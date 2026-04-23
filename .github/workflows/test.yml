@@ -1,0 +1,39 @@
+name: Test scripts
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    name: Test ${{ matrix.family }} ${{ matrix.version }}
+    runs-on: ubuntu-latest
+    container: ghcr.io/zephyrproject-rtos/ci-base:main
+
+    strategy:
+      matrix:
+        family:
+          - espressif-s3
+          - nordic
+          - st-stm32
+
+        version:
+          - 4.3.0
+          - 4.4.0
+
+        exclude:
+          - family: nordic
+            version: 4.4.0
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install dependencies
+        run: |
+          apt-get update -qq
+          apt-get install -y -qq curl
+
+      - name: Test script
+        run: |
+          bash init.sh ${{ matrix.family }} ${{ matrix.version }} zephyr-workspace
+
