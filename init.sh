@@ -52,7 +52,7 @@ west zephyr-export
 uv pip install $(west packages pip | tr -d '\r')
 
 if [ "$1" = "espressif-s3" ]; then
-  west blobs fetch hal_espressif
+  west blobs fetch hal_espressif --allow-regex '.*esp32s3.*'
   west sdk install -t xtensa-espressif_esp32s3_zephyr-elf
   west config --local build.board adafruit_feather_esp32s3_tft/esp32s3/procpu
 fi
