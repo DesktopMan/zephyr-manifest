@@ -81,7 +81,7 @@ function install_openocd_esp32 {
 
 if [ "$1" = "espressif-s3" ]; then
   install_openocd_esp32
-  west blobs fetch hal_espressif --allow-regex '.*esp32s3.*'
+  west blobs fetch hal_espressif
   west sdk install -t xtensa-espressif_esp32s3_zephyr-elf
   west config --local build.board adafruit_feather_esp32s3_tft/esp32s3/procpu
 
