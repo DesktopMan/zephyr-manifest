@@ -12,3 +12,5 @@ manifest:
         path-prefix: external
         name-allowlist:
           - hal_espressif
+          - mbedtls
+          - tf-psa-crypto
