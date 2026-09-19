@@ -1,6 +1,8 @@
-# Zephyr West Manifest
+# Zephyr workspace init script
 
-This repository provides west manifests for working with the Zephyr RTOS, pinned to a specific Zephyr version.
+[![CI](https://github.com/DesktopMan/zephyr-manifest/actions/workflows/test.yml/badge.svg)](https://github.com/DesktopMan/zephyr-manifest/actions/workflows/test.yml)
+
+This repository provides an init script and minimal manifests for working with the Zephyr RTOS, pinned to a specific Zephyr version.
 
 Each manifest is configured for a specific SoC family and Zephyr version for a storage optimized workspace.
 
