@@ -105,6 +105,12 @@ if [ "$1" = "st-stm32" ]; then
   west config --local build.board disco_l475_iot1
 fi
 
+mkdir config
+echo "CONFIG_ASSERT=y" >> config/debug.conf
+echo "CONFIG_DEBUG_OPTIMIZATIONS=y" >> config/debug.conf
+echo "CONFIG_DEBUG_THREAD_INFO=y" >> config/debug.conf
+west config build.cmake-args -- "-DEXTRA_CONF_FILE=$PWD/config/debug.conf"
+
 mkdir samples
 cp -rp external/zephyr/samples/hello_world samples
 cp -rp external/zephyr/samples/basic/blinky samples
