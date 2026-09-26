@@ -85,14 +85,12 @@ if [ "$1" = "espressif-s3" ]; then
   west sdk install -t xtensa-espressif_esp32s3_zephyr-elf
   west config --local build.board adafruit_feather_esp32s3_tft/esp32s3/procpu
 
-  cat <<-'EOF' >> external/zephyr/boards/adafruit/feather_esp32s3_tft/support/openocd.cfg
+  CFG="external/zephyr/boards/adafruit/feather_esp32s3_tft/support/openocd.cfg"
 
-		set hardware-watchpoint-limit 2
-
-		$_TARGETNAME_0 configure -event reset-init {
-		  esp appimage_offset 0x0
-		}
-	EOF
+  echo '$_TARGETNAME_0 configure -event gdb-attach {' >> $CFG
+  echo '  halt' >> $CFG
+  echo '  esp appimage_offset 0x0' >> $CFG
+  echo '}' >> $CFG
 fi
 
 if [ "$1" = "nordic" ]; then
