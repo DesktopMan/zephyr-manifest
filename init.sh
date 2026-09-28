@@ -68,8 +68,9 @@ function install_openocd_esp32 {
     VENV_BIN="$PWD/.venv/bin"
   fi
 
-  west config alias.debug "debug --openocd \"$VENV_BIN/openocd-esp32$BIN_EXT\""
-  west config alias.debugserver "debugserver --openocd \"$VENV_BIN/openocd-esp32$BIN_EXT\""
+  west config alias.debug "debug --openocd \"$VENV_BIN/openocd-esp32$BIN_EXT\" --config \"$PWD/config/openocd.cfg\""
+  west config alias.debugserver "debugserver --openocd \"$VENV_BIN/openocd-esp32$BIN_EXT\" --config \"$PWD/config/openocd.cfg\""
+
 }
 
 if [ "$1" = "espressif-s3" ]; then
@@ -77,13 +78,6 @@ if [ "$1" = "espressif-s3" ]; then
   west blobs fetch hal_espressif
   west sdk install -t xtensa-espressif_esp32s3_zephyr-elf
   west config --local build.board adafruit_feather_esp32s3_tft/esp32s3/procpu
-
-  CFG="external/zephyr/boards/adafruit/feather_esp32s3_tft/support/openocd.cfg"
-
-  echo '$_TARGETNAME_0 configure -event gdb-attach {' >> $CFG
-  echo '  halt' >> $CFG
-  echo '  esp appimage_offset 0x0' >> $CFG
-  echo '}' >> $CFG
 fi
 
 if [ "$1" = "nordic" ]; then
@@ -97,10 +91,23 @@ if [ "$1" = "st-stm32" ]; then
 fi
 
 mkdir config
-echo "CONFIG_ASSERT=y" >> config/debug.conf
-echo "CONFIG_DEBUG_OPTIMIZATIONS=y" >> config/debug.conf
-echo "CONFIG_DEBUG_THREAD_INFO=y" >> config/debug.conf
-west config build.cmake-args -- "-DEXTRA_CONF_FILE=$PWD/config/debug.conf"
+
+CFG="config/prj.conf"
+echo "CONFIG_ASSERT=y" >> $CFG
+echo "CONFIG_DEBUG_OPTIMIZATIONS=y" >> $CFG
+echo "CONFIG_DEBUG_THREAD_INFO=y" >> $CFG
+west config --local build.cmake-args -- "\"-DEXTRA_CONF_FILE=$PWD/$CFG\""
+
+if [ "$1" = "espressif-s3" ]; then
+  CFG="config/openocd.cfg"
+  cp "external/zephyr/boards/adafruit/feather_esp32s3_tft/support/openocd.cfg" $CFG
+
+  echo '' >> $CFG
+  echo '$_TARGETNAME_0 configure -event gdb-attach {' >> $CFG
+  echo '  halt' >> $CFG
+  echo '  esp appimage_offset 0x0' >> $CFG
+  echo '}' >> $CFG
+fi
 
 mkdir samples
 cp -rp external/zephyr/samples/hello_world samples
