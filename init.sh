@@ -61,18 +61,11 @@ uv pip install $(west packages pip | tr -d '\r')
 function install_openocd_esp32 {
   uv pip install openocd-esp32
 
-  OPENOCD_ESP32_URL="https://github.com/espressif/openocd-esp32/releases/download/v0.12.0-esp32-20260703/openocd-esp32-win64-0.12.0-esp32-20260703.zip"
-  OPENOCD_ESP32_ZIP="$(mktemp).zip"
-  curl -LsSf "$OPENOCD_ESP32_URL" -o "$OPENOCD_ESP32_ZIP"
-  OPENOCD_ESP32_TEMP="$(mktemp -d)"
-  unzip -q "$OPENOCD_ESP32_ZIP" -d "$OPENOCD_ESP32_TEMP"
-  cp -rp "$OPENOCD_ESP32_TEMP/openocd-esp32/share/openocd" .venv/share
-
   if [ "$WINDOWS" -eq 1 ]; then
     VENV_BIN=$(cygpath -m "$PWD/.venv/Scripts")
-	BIN_EXT=".exe"
+    BIN_EXT=".exe"
   else
-	VENV_BIN="$PWD/.venv/bin"
+    VENV_BIN="$PWD/.venv/bin"
   fi
 
   west config alias.debug "debug --openocd \"$VENV_BIN/openocd-esp32$BIN_EXT\""
